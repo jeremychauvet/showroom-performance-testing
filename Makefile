@@ -1,4 +1,4 @@
 .PHONY: run
 
 run:
-	./bin/gatling.sh
+	./gatling/bin/gatling.sh
