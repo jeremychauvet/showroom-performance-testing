@@ -1,18 +1,13 @@
 version: '3.7'
 
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
-
 services:
-
   prometheus:
     image: prom/prometheus:v2.1.0
     hostname: prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus/:/etc/prometheus/
-      - prometheus_data:/prometheus
+      - ./prometheus/configuration:/etc/prometheus/
+      - ./prometheus/data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -61,10 +56,10 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/config/:/etc/grafana/provisioning/
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/configuration:/etc/grafana/provisioning/
     env_file:
-      - ./grafana/parameters.env
+      - ./grafana/configuration/parameters.env
 
   weavescope:
     image: weaveworks/scope
@@ -75,3 +70,30 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
     command: "--probe.docker=true --weave=false"
+
+  cms:
+    image: ghost:3-alpine
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./data/ghost:/var/lib/ghost/content
+    ports:
+      - 80:2368
+    environment:
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: root
+      database__connection__password: password
+      database__connection__database: ghost
+      url: http://localhost
+
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./data/database:/var/lib/mysql
+    ports:
+      - 3306:3306  
+    environment:
+      MYSQL_ROOT_PASSWORD: password
