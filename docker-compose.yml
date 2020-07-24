@@ -61,16 +61,6 @@ services:
     env_file:
       - ./grafana/configuration/parameters.env
 
-  weavescope:
-    image: weaveworks/scope
-    hostname: weavescope
-    container_name: weavescope
-    ports:
-      - "4040:4040"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:rw"
-    command: "--probe.docker=true --weave=false"
-
   cms:
     image: ghost:3-alpine
     restart: always
