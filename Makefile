@@ -1,6 +1,7 @@
-.PHONY: run-test launch-stack
+.PHONY: run-test start
+.DEFAULT: start
 
-launch-stack:
+start:
 	docker-compose up -d 
 	docker-compose logs -ft
 
