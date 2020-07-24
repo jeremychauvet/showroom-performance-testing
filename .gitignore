@@ -1,3 +1,4 @@
 gatling/target/
 grafana/data/
 prometheus/data/
+ghost/
