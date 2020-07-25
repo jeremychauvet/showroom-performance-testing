@@ -1,4 +1,15 @@
+.DS_Store
+
+# Gatling.
 gatling/target/
+gatling/results/
+
+# Grafana.
 grafana/data/
+
+# Prometheus.
 prometheus/data/
+
+# Ghost.
 ghost/
+
