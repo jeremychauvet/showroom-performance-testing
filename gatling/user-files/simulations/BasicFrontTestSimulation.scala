@@ -7,7 +7,7 @@ import io.gatling.jdbc.Predef._
 
 class BasicFrontTestSimulation extends Simulation {
 
-	val endpoint = "http://ghost.localhost"
+	val endpoint = "http://localhost"
 
 	val httpProtocol = http
 		.baseUrl(endpoint)
