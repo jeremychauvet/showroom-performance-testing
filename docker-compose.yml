@@ -57,7 +57,8 @@ services:
       - 3000:3000
     volumes:
       - ./grafana/data:/var/lib/grafana
-      - ./grafana/configuration:/etc/grafana/provisioning/
+      - ./grafana/configuration/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/configuration/datasources:/etc/grafana/provisioning/
     env_file:
       - ./grafana/configuration/parameters.env
 
