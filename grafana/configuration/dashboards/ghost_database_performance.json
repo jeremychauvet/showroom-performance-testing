@@ -125,7 +125,10 @@
   ],
   "schemaVersion": 26,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "database", 
+    "docker"
+  ],
   "templating": {
     "list": []
   },
