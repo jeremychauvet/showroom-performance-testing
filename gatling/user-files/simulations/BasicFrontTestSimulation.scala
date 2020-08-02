@@ -41,7 +41,7 @@ class BasicFrontTestSimulation extends Simulation {
 	)
 
 	setUp(
-		lambdaUser.inject(constantUsersPerSec(1) during (30 seconds) randomized),
-		utmCampaignUser.inject(constantUsersPerSec(5) during (60 seconds) randomized)
+		lambdaUser.inject(constantUsersPerSec(3) during (30 seconds) randomized),
+		utmCampaignUser.inject(constantUsersPerSec(10) during (60 seconds) randomized)
 	).protocols(httpProtocol)
 }
