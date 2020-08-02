@@ -12,6 +12,7 @@ class EnduranceFrontTestSimulation extends Simulation {
 	val httpProtocol = http
 		.baseUrl(endpoint)
 		.inferHtmlResources()
+		.disableCaching
 		.acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
 		.acceptEncodingHeader("gzip, deflate")
 		.acceptLanguageHeader("fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3")
@@ -36,11 +37,9 @@ class EnduranceFrontTestSimulation extends Simulation {
 	)
 
 	setUp(
-		lambdaUser.inject(constantUsersPerSec(5) during (10 minutes))
-	).throttle(
-		reachRps(100) in (10 seconds),
-		holdFor(1 minute),
-		jumpToRps(50),
-		holdFor(2 hours)
+		lambdaUser.inject(
+			atOnceUsers(10),
+			rampUsersPerSec(10) to 300 during (10 minutes) randomized
+		)
 	).protocols(httpProtocol)
 }
