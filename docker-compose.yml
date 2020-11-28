@@ -7,7 +7,7 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus/configuration:/etc/prometheus/
-      - ./prometheus/data:/prometheus
+      - prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -98,3 +98,6 @@ services:
       - 3306:3306  
     environment:
       MYSQL_ROOT_PASSWORD: password
+
+volumes:
+  prometheus:
