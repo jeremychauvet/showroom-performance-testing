@@ -4,6 +4,8 @@
 
 - [Website](http://localhost)
 - [Grafana](http://localhost:3000)
+  - User : admin
+  - Password : PassW0rd_
 - [cAdvisor](http://localhost:8080)
 
 ## Links
