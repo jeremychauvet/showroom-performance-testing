@@ -1,5 +1,8 @@
 # Performance testing showroom
 
+Project aim's to demonstrate how to monitore a website with Prometheus, Grafana and cAdvisor.
+Please note that you need Docker installed to run the stack. Once installed, please run `make start`.
+
 ## URL
 
 - [Website](http://localhost)
