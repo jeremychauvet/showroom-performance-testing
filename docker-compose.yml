@@ -63,7 +63,7 @@ services:
       - ./grafana/configuration/parameters.env
 
   cms:
-    image: ghost:3-alpine
+    image: ghost:5-alpine
     hostname: ghost_server
     container_name: ghost_server
     restart: always
@@ -88,7 +88,7 @@ services:
       url: http://localhost
 
   db:
-    image: mysql:5.7
+    image: mysql:8
     hostname: ghost_database
     container_name: ghost_database
     restart: always

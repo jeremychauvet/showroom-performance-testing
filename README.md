@@ -10,6 +10,7 @@ Please note that you need Docker installed to run the stack. Once installed, ple
   - User : admin
   - Password : PassW0rd_
 - [cAdvisor](http://localhost:8080)
+- [Victoria Metrics](http://localhost:8428/vmui)
 
 ## Links
 
