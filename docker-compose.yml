@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   prometheus:
-    image: prom/prometheus:v2.1.0
+    image: prom/prometheus:v2.44.0
     hostname: prometheus
     container_name: prometheus
     volumes:
@@ -26,8 +26,8 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-    command: 
-      - '--path.procfs=/host/proc' 
+    command:
+      - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - --collector.filesystem.ignored-mount-points
       - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
@@ -74,7 +74,7 @@ services:
     ports:
       - 80:2368
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
       interval: 10s
       timeout: 10s
       retries: 3
@@ -95,9 +95,18 @@ services:
     volumes:
       - ./ghost/data:/var/lib/mysql
     ports:
-      - 3306:3306  
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: password
 
+  vm:
+    image: victoriametrics/victoria-metrics:latest
+    command: -storageDataPath=/victoria-metrics-data
+    ports:
+      - 8428:8428
+    volumes:
+      - victoria-metrics-data:/victoria-metrics-data
+
 volumes:
   prometheus:
+  victoria-metrics-data:
