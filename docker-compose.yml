@@ -24,6 +24,8 @@ services:
       - 8428
     networks:
       - showroom_private
+    depends_on:
+      - cadvisor
 
   node-exporter:
     image: prom/node-exporter
@@ -47,7 +49,6 @@ services:
     image: grafana/grafana
     hostname: grafana
     container_name: grafana
-    user: "$UID:$GID"
     depends_on:
       - prometheus
     ports:
@@ -115,6 +116,18 @@ services:
       - "--storageDataPath=/storage"
       - "--retentionPeriod=3" # 3 months
       - "--httpListenAddr=:8428"
+
+  cadvisor:
+    image: google/cadvisor
+    hostname: cadvisor
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8080:8080
 
 volumes:
   prometheus_ephemeral_storage: {}
