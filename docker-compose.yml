@@ -49,6 +49,7 @@ services:
     image: grafana/grafana
     hostname: grafana
     container_name: grafana
+    user: "$UID:$GID" # Important.
     depends_on:
       - prometheus
     ports:
