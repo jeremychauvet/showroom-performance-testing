@@ -7,12 +7,18 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus/configuration:/etc/prometheus/
-      - prometheus:/prometheus
+      - prometheus_ephemeral_storage:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
     ports:
       - 9090:9090
       - 8428
@@ -67,7 +73,7 @@ services:
     ports:
       - 80:2368
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:2368" ]
       interval: 10s
       timeout: 10s
       retries: 3
@@ -102,17 +108,16 @@ services:
     ports:
       - 8428:8428
     volumes:
-      - vmdata:/storage
+      - ./victoria_metrics/persistant_storage:/storage
     networks:
       - showroom_private
     command:
       - "--storageDataPath=/storage"
-      - "--retentionPeriod=3"
+      - "--retentionPeriod=3" # 3 months
       - "--httpListenAddr=:8428"
 
 volumes:
-  prometheus: {}
-  vmdata: {}
+  prometheus_ephemeral_storage: {}
 
 networks:
   showroom_private:
