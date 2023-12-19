@@ -7,17 +7,25 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus/configuration:/etc/prometheus/
-      - prometheus:/prometheus
+      - prometheus_ephemeral_storage:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
     ports:
       - 9090:9090
       - 8428
     networks:
       - showroom_private
+    depends_on:
+      - cadvisor
 
   node-exporter:
     image: prom/node-exporter:v1.7.0
@@ -41,7 +49,7 @@ services:
     image: grafana/grafana:10.2.3
     hostname: grafana
     container_name: grafana
-    user: "$UID:$GID"
+    user: "$UID:$GID" # Important.
     depends_on:
       - prometheus
     ports:
@@ -67,7 +75,7 @@ services:
     ports:
       - 80:2368
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:2368" ]
       interval: 10s
       timeout: 10s
       retries: 3
@@ -113,6 +121,18 @@ services:
     command:
       - "--probe.docker=true"
       - "--weave=false"
+
+  cadvisor:
+    image: google/cadvisor
+    hostname: cadvisor
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8080:8080
 
 volumes:
   prometheus: {}

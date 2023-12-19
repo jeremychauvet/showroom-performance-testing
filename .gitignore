@@ -13,3 +13,5 @@ prometheus/data/
 # Ghost.
 ghost/
 
+# Victoria Metrics
+victoria_metrics/
