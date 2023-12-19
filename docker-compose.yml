@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   prometheus:
-    image: prom/prometheus:v2.44.0
+    image: prom/prometheus:v2.48.1
     hostname: prometheus
     container_name: prometheus
     volumes:
@@ -20,7 +20,7 @@ services:
       - showroom_private
 
   node-exporter:
-    image: prom/node-exporter
+    image: prom/node-exporter:v1.7.0
     hostname: node-exporter
     container_name: node-exporter
     volumes:
@@ -38,7 +38,7 @@ services:
       - showroom_private
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:10.2.3
     hostname: grafana
     container_name: grafana
     user: "$UID:$GID"
@@ -96,23 +96,26 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
 
-  victoriametrics:
-    container_name: victoriametrics
-    image: victoriametrics/victoria-metrics:v1.91.2
-    ports:
-      - 8428:8428
-    volumes:
-      - vmdata:/storage
+  weavescope:
+    image: weaveworks/scope:latest
+    container_name: weavescope
+    hostname: weavescope
+    pid: "host"
+    privileged: true
     networks:
       - showroom_private
+    ports:
+      - "4040:4040"
+    labels:
+      - "works.weave.role=system"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
     command:
-      - "--storageDataPath=/storage"
-      - "--retentionPeriod=3"
-      - "--httpListenAddr=:8428"
+      - "--probe.docker=true"
+      - "--weave=false"
 
 volumes:
   prometheus: {}
-  vmdata: {}
 
 networks:
   showroom_private:
