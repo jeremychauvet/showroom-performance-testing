@@ -1,0 +1,21 @@
+{
+  "node_name": "consul-server-1",
+  "server": true,
+  "bootstrap": true,
+  "retry_join": ["consul-server-1", "consul-server-2", "consul-server-3"],
+  "ui_config": {
+    "enabled" : true
+  },
+  "datacenter": "dc1",
+  "data_dir": "/consul/data",
+  "addresses": {
+    "http" : "0.0.0.0"
+  },
+  "telemetry" : {
+    "prometheus_retention_time" : "60s",
+    "disable_hostname" : true
+  },
+  "encrypt": "GdWJ8rCru6Ch4U73+r/7IFygz2O8MokLI+a2Z9LpBLI=",
+  "encrypt_verify_incoming": true,
+  "encrypt_verify_outgoing": true
+}

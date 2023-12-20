@@ -7,7 +7,7 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus/configuration:/etc/prometheus/
-      - prometheus_ephemeral_storage:/prometheus
+      - prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -23,7 +23,7 @@ services:
       - 9090:9090
       - 8428
     networks:
-      - showroom_private
+      - acme_private_network
     depends_on:
       - cadvisor
 
@@ -43,13 +43,13 @@ services:
     ports:
       - 9100:9100
     networks:
-      - showroom_private
+      - acme_private_network
 
   grafana:
     image: grafana/grafana:10.2.3
     hostname: grafana
     container_name: grafana
-    user: "$UID:$GID" # Important.
+    #user: "$UID:$GID" # Important.
     depends_on:
       - prometheus
     ports:
@@ -61,10 +61,12 @@ services:
     env_file:
       - ./grafana/configuration/parameters.env
     networks:
-      - showroom_private
+      - acme_private_network
 
-  cms:
-    image: ghost:5-alpine
+  ghost:
+    build:
+      dockerfile: Dockerfile
+      context: ./docker/webserver/
     hostname: ghost_server
     container_name: ghost_server
     restart: always
@@ -81,7 +83,7 @@ services:
       retries: 3
       start_period: 1m
     networks:
-      - showroom_private
+      - acme_private_network
     environment:
       database__client: mysql
       database__connection__host: db
@@ -100,7 +102,7 @@ services:
     ports:
       - 3306:3306
     networks:
-      - showroom_private
+      - acme_private_network
     environment:
       MYSQL_ROOT_PASSWORD: password
 
@@ -111,7 +113,7 @@ services:
     pid: "host"
     privileged: true
     networks:
-      - showroom_private
+      - acme_private_network
     ports:
       - "4040:4040"
     labels:
@@ -134,8 +136,50 @@ services:
     ports:
       - 8080:8080
 
+  consul-server-1:
+    image: hashicorp/consul:1.17
+    container_name: consul-server-1
+    restart: always
+    volumes:
+      - ./consul/consul-server-1-config.json:/consul/config/server.json:ro
+    networks:
+      - acme_private_network
+    ports:
+      - "8501:8500"
+      - "8601:8600/tcp"
+      - "8601:8600/udp"
+    command: "agent"
+
+  consul-server-2:
+    image: hashicorp/consul:1.17
+    container_name: consul-server-2
+    restart: always
+    volumes:
+      - ./consul/consul-server-2-config.json:/consul/config/server.json:ro
+    networks:
+      - acme_private_network
+    ports:
+      - "8502:8500"
+      - "8602:8600/tcp"
+      - "8602:8600/udp"
+    command: "agent"
+
+  consul-server-3:
+    image: hashicorp/consul:1.17
+    container_name: consul-server-3
+    restart: always
+    volumes:
+      - ./consul/consul-server-3-config.json:/consul/config/server.json:ro
+    networks:
+      - acme_private_network
+    ports:
+      - "8503:8500"
+      - "8603:8600/tcp"
+      - "8603:8600/udp"
+    command: "agent"
+
 volumes:
   prometheus: {}
 
 networks:
-  showroom_private:
+  acme_private_network:
