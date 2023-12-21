@@ -1,26 +1,23 @@
-.PHONY: run-test start stop status logs debug
-.DEFAULT: start
+.PHONY: run-test up down watch logs debug
+.DEFAULT: up
 
-start:
+up:
 	docker-compose up -d
 
 logs:
 	docker-compose logs -ft
 
-status:
+watch:
 	watch docker-compose ps
 
-stop:
+down:
 	docker-compose down
 
 run-test:
 	./gatling/bin/gatling.sh
 
-debug:
-	docker-compose stop consul-server-1
-	docker-compose stop consul-server-2
-	docker-compose stop consul-server-3
-	docker-compose start consul-server-1
-	docker-compose start consul-server-2
-	docker-compose start consul-server-3
+consul-rolling-update:
+	docker-compose exec consul-server-1 consul reload
+	docker-compose exec consul-server-2 consul reload
+	docker-compose exec consul-server-3 consul reload
 	docker-compose logs -ft consul-server-1 consul-server-2 consul-server-3

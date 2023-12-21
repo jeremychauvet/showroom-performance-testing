@@ -70,10 +70,12 @@ services:
     hostname: ghost_server
     container_name: ghost_server
     restart: always
+    command: "consul agent -config-dir /consul/config/client.json"
     depends_on:
       - db
     volumes:
       - ./ghost/configuration:/var/lib/ghost/content
+      - ./consul/consul-client-ghost-config.json:/consul/config/client.json:ro
     ports:
       - 80:2368
     healthcheck:

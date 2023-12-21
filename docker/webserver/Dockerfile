@@ -6,3 +6,5 @@ RUN apk add --no-cache --update --purge curl unzip && \
     mv consul /usr/local/bin/ && \
     rm consul.zip && \
     consul --version
+
+CMD consul agent -config-dir /consul/config/client.json
